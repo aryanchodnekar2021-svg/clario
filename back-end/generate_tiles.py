@@ -26,4 +26,8 @@ async def generate_all_tiles(lat_min=18.5, lat_max=19.5, lon_min=72.5, lon_max=7
     print(f"Finished. Generated {count} tiles in {end_time - start_time:.2f} seconds.")
 
 if __name__ == "__main__":
-    asyncio.run(generate_all_tiles())
+    while True:
+        print("Generating pollution tiles...")
+        asyncio.run(generate_all_tiles())
+        print("Sleeping 30 minutes...")
+        time.sleep(1800)
