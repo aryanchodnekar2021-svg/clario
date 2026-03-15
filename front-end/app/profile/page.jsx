@@ -48,7 +48,7 @@ export default function ProfilePage() {
                 <div className="space-y-4">
                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] px-1">Weekly Outdoor Intensity</p>
                    <div className="grid grid-cols-3 gap-3">
-                      {(['low', 'moderate', 'high'] as const).map((level) => (
+                      {['low', 'moderate', 'high'].map((level) => (
                          <button
                            key={level}
                            onClick={() => setHealthProfile({ ...healthProfile, outdoorActivity: level })}

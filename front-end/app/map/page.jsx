@@ -9,8 +9,8 @@ import { formatAqi } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MapPage() {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<maplibregl.Map | null>(null);
+  const mapContainer = useRef(null);
+  const map = useRef(null);
   const { userLocation, layer, setLayer } = useStore();
   const [showAqiCard, setShowAqiCard] = useState(true);
 

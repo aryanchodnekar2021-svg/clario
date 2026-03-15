@@ -90,7 +90,7 @@ export default function RoutePage() {
                   <button
                     key={route.id}
                     onClick={() => setSelected(route.id)}
-                    className={`flex flex-col items-center gap-3 p-4 rounded-3xl border transition-all duration-500 ${isActive ? colors[route.color as keyof typeof colors] : 'border-white/5 bg-white/5 text-muted-foreground'}`}
+                    className={`flex flex-col items-center gap-3 p-4 rounded-3xl border transition-all duration-500 ${isActive ? colors[route.color] : 'border-white/5 bg-white/5 text-muted-foreground'}`}
                   >
                      <route.icon className={`w-6 h-6 ${isActive ? '' : 'opacity-40'}`} />
                      <div className="text-center">

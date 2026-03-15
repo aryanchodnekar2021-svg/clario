@@ -1,11 +1,11 @@
-import { type ClassValue, clsx } from 'clsx';
+import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-export function cn(...inputs: ClassValue[]) {
+export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-export function formatAqi(value: number) {
+export function formatAqi(value) {
   if (value <= 50) return { label: 'Good', color: 'var(--aqi-good)', bg: 'bg-[#00e400]' };
   if (value <= 100) return { label: 'Moderate', color: 'var(--aqi-moderate)', bg: 'bg-[#ffff00]' };
   if (value <= 150) return { label: 'Unhealthy for Sensitive', color: 'var(--aqi-sensitive)', bg: 'bg-[#ff7e00]' };
