@@ -5,10 +5,9 @@ import { Map, Source, Layer, NavigationControl, GeolocateControl, Marker } from 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useStore } from '@/store/useStore';
 import { formatAqi } from '@/lib/utils';
-import { Wind, Droplets, Info, X, Zap, Map as MapIcon, AlertTriangle } from 'lucide-react';
+import { Wind, Droplets, Info, X, Zap, Map as MapIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MapFilterPanel from './MapFilterPanel';
-import RoutePlanner from './RoutePlanner';
 
 const CARTO_STYLE = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
 const SATELLITE_STYLE = {
@@ -48,10 +47,6 @@ export default function PollutionMap() {
   const [range, setRange] = useState([0, 300]);
   const [selectedCategories, setSelectedCategories] = useState(['good', 'moderate', 'sensitive', 'unhealthy', 'very_unhealthy', 'hazardous']);
 
-  // Routing State
-  const [routeData, setRouteData] = useState(null);
-  const [selectedRouteType, setSelectedRouteType] = useState(null);
-
   const { userLocation, setUserLocation } = useStore();
   const [userPos, setUserPos] = useState(null);
 
@@ -74,23 +69,6 @@ export default function PollutionMap() {
       return `${baseUrl}/forecast_tiles/${timeOffset}/{z}/{x}/{y}.png?layer=${activeLayer}`;
     }
     return `${baseUrl}/tiles/${activeLayer}/{z}/{x}/{y}.png`;
-  };
-
-  const handleRouteSelected = (data, type) => {
-    setRouteData(data);
-    setSelectedRouteType(type);
-    
-    // Auto-focus on route if available
-    if (data && data[`${type}_route`]?.geometry?.coordinates?.length > 0) {
-        const coords = data[`${type}_route`].geometry.coordinates;
-        setViewState(prev => ({
-            ...prev,
-            longitude: coords[0][0],
-            latitude: coords[0][1],
-            zoom: 12,
-            transitionDuration: 1000
-        }));
-    }
   };
 
   // Step 5: Update user location every 10 seconds
@@ -148,44 +126,6 @@ export default function PollutionMap() {
           </Marker>
         )}
 
-        {/* Route Visualization */}
-        {routeData && selectedRouteType && (
-            <Source id="vayu-route" type="geojson" data={routeData[`${selectedRouteType}_route`]}>
-                <Layer
-                    id="route-glow"
-                    type="line"
-                    paint={{
-                        'line-color': routeData[`${selectedRouteType}_route`]?.properties?.color || '#3b82f6',
-                        'line-width': 12,
-                        'line-opacity': 0.2,
-                        'line-blur': 8
-                    }}
-                />
-                <Layer
-                    id="route-line"
-                    type="line"
-                    layout={{ 'line-cap': 'round', 'line-join': 'round' }}
-                    paint={{
-                        'line-color': routeData[`${selectedRouteType}_route`]?.properties?.color || '#3b82f6',
-                        'line-width': 6
-                    }}
-                />
-            </Source>
-        )}
-
-        {/* Hotspot Markers */}
-        {routeData?.hotspots?.map((h, i) => (
-            <Marker key={i} longitude={h.lon} latitude={h.lat}>
-                <div className="group relative cursor-help">
-                    <div className="absolute -inset-4 bg-red-600 rounded-full blur-[10px] opacity-40 animate-pulse" />
-                    <AlertTriangle className="relative w-5 h-5 text-red-500 fill-red-500/10 stroke-[3px]" />
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 bg-slate-900 rounded-lg text-[8px] font-black text-white border border-red-500/30 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
-                        {h.pm25} µg/m³
-                    </div>
-                </div>
-            </Marker>
-        ))}
-
         {/* Dynamic Air Quality Raster Heatmap Layer */}
         <Source
           key={`${activeLayer}-${timeOffset}`} // Force source refresh on layer/time change
@@ -230,9 +170,6 @@ export default function PollutionMap() {
         selectedCategories={selectedCategories}
         setSelectedCategories={setSelectedCategories}
       />
-
-      {/* Navigation Planner (Top Right) */}
-      <RoutePlanner onRouteSelected={handleRouteSelected} forecastHours={timeOffset} />
 
       {/* Floating AQI Card */}
       <AnimatePresence>
