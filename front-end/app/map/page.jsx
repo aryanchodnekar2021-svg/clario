@@ -41,6 +41,14 @@ export default function MapPage() {
             ],
             tileSize: 256,
             attribution: '&copy; Stadia Maps &copy; OpenStreetMap'
+          },
+          'vayu-pm25-heatmap': {
+            type: 'raster',
+            tiles: [
+              'http://localhost:8000/tiles/{z}/{x}/{y}.png'
+            ],
+            tileSize: 256,
+            scheme: 'xyz'
           }
         },
         layers: [
@@ -48,24 +56,40 @@ export default function MapPage() {
             id: 'osm',
             type: 'raster',
             source: 'osm',
+          },
+          {
+            id: 'pm25-layer',
+            type: 'raster',
+            source: 'vayu-pm25-heatmap',
+            paint: {
+              'raster-opacity': 0.6,
+              'raster-fade-duration': 500
+            },
+            layout: {
+              'visibility': layer === 'pm25' ? 'visible' : 'none'
+            }
           }
         ]
       },
-      center: [userLocation?.lng || -74.006, userLocation?.lat || 40.7128],
-      zoom: 12,
+      center: [72.8777, 19.0760], // Default to Mumbai (India region generator)
+      zoom: 10,
     });
 
     map.current.addControl(new maplibregl.NavigationControl(), 'bottom-right');
 
-    const interval = setInterval(() => {
-      // Logic to refresh heatmap layer if it were implemented
-    }, 30 * 60 * 1000);
-
     return () => {
-      clearInterval(interval);
       map.current?.remove();
     };
   }, []);
+
+  // Sync layer visibility with store
+  useEffect(() => {
+    if (!map.current) return;
+    const visibility = layer === 'pm25' ? 'visible' : 'none';
+    if (map.current.getLayer('pm25-layer')) {
+      map.current.setLayoutProperty('pm25-layer', 'visibility', visibility);
+    }
+  }, [layer]);
 
   return (
     <div className="relative w-full h-full bg-black overflow-hidden">

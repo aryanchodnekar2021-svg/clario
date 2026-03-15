@@ -2,9 +2,14 @@ fastapi
 uvicorn
 pandas
 numpy
+scipy
+rasterio
+matplotlib
 xgboost
 scikit-learn
 supabase
 python-dotenv
 firebase-admin
 requests
+mercantile
+pillow
