@@ -1,4 +1,4 @@
-# 🌬️ VAYU — AI Environmental Intelligence Platform
+# 🌬️ CLARIO— AI Environmental Intelligence Platform
 
 > **Predictive air quality intelligence for a healthier tomorrow.**
 
